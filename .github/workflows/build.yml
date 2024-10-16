@@ -3,6 +3,8 @@ name: Test and release
 on:
   push:
     branches: [ "master" ]
+    tags:
+      - "*"
   pull_request:
     branches: [ "master" ]
   release:
@@ -42,3 +44,13 @@ jobs:
           ./gradlew publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+      if: startsWith(github.ref, 'refs/tags/')
+      runs-on: ubuntu-latest
+      permissions:
+        contents: write
+      steps:
+        - uses: ncipollo/release-action@v1
+          with:
+            generateReleaseNotes: true
